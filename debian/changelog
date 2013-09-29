@@ -1,10 +1,15 @@
-debathena-cluster-login-config (1.39) UNRELEASED; urgency=low
+debathena-cluster-login-config (1.39) unstable; urgency=low
 
+  [ Jonathan Reed ]
   * Switch from control.in to control (Trac: #561)
   * Bump Standards-Version to 3.9.3
   * Bump compat level to 7
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 03 Apr 2013 13:38:25 -0400
+  [ Alexander Chernyakhovsky ]
+  * Add git-buildpackage configuration
+  * Set source format to 3.0 (native)
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Sun, 29 Sep 2013 05:10:01 -0400
 
 debathena-cluster-login-config (1.38) unstable; urgency=low
 
