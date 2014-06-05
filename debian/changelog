@@ -1,9 +1,12 @@
 debathena-cluster-login-config (1.40) unstable; urgency=low
 
   * Disable Lens search results (Trac: #1423)
-  * Customize the Launcher
+  * Customize the Launcher for people who haven't used it before
+  * Add dconf locks to disable user switching
+  * Disable the guest session in lightdm (and, by extension,
+    indicator-session)
 
- -- Jonathan Reed <jdreed@mit.edu>  Thu, 05 Jun 2014 12:15:10 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 05 Jun 2014 17:23:39 -0400
 
 debathena-cluster-login-config (1.39) unstable; urgency=low
 
