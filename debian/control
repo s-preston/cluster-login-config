@@ -11,7 +11,7 @@ Depends: ${misc:Depends}, debathena-afs-config, debathena-gdm-config, debathena-
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Breaks: debathena-reactivate (<< 2~), gdm (<< 2.25.2~)
-X-Debathena-Build-For: natty precise
+X-Debathena-Build-For: precise trusty
 Description: Login configuration for Athena cluster machines
  This package sets up a login policy for Athena cluster machines by
  disabling console logins, disabling sshd, disabling user switching,
