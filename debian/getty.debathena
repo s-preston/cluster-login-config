@@ -12,6 +12,8 @@ user back to their session if they press any key.
 
 import curses
 import getopt
+import logging
+import logging.handlers
 import os
 import pwd
 import subprocess
@@ -19,14 +21,32 @@ import sys
 import time
 
 import dbus
+from dbus.exceptions import DBusException
 
 
+# ConsoleKit
 CK_NAME = 'org.freedesktop.ConsoleKit'
 CK_MANAGER_PATH = '/org/freedesktop/ConsoleKit/Manager'
 CK_MANAGER_IFACE = 'org.freedesktop.ConsoleKit.Manager'
 CK_SESSION_IFACE = 'org.freedesktop.ConsoleKit.Session'
+
+# logind
+LD_NAME = 'org.freedesktop.login1'
+LD_MANAGER_PATH = '/org/freedesktop/login1'
+LD_MANAGER_IFACE = 'org.freedesktop.login1.Manager'
+LD_SESSION_IFACE = 'org.freedesktop.login1.Session'
+
 KIOSK_USER = None
 
+logger = logging.getLogger('getty.debathena')
+logger.setLevel(logging.DEBUG)
+sl_handler = logging.handlers.SysLogHandler(
+    address='/dev/log',
+    facility=logging.handlers.SysLogHandler.LOG_AUTH)
+sl_handler.setLevel(logging.INFO)
+sl_handler.setFormatter(
+    logging.Formatter("%(name)s[%(process)d] %(levelname)s: %(message)s"))
+logger.addHandler(sl_handler)
 
 def find_tty(args):
     """Find the tty in a set of getty arguments.
@@ -48,8 +68,7 @@ def find_tty(args):
     else:
         return args[0]
 
-
-def activate_session():
+def activate_session_consolekit():
     """Seek out and activate what should be the current session.
 
     Using ConsoleKit, activate_session first looks to see if there is
@@ -74,6 +93,7 @@ def activate_session():
                              CK_MANAGER_IFACE)
 
     session = None
+    sessions = None
     if KIOSK_USER:
         # We'll prefer kiosk sessions if they exist
         sessions = manager.GetSessionsForUnixUser(KIOSK_USER)
@@ -93,36 +113,121 @@ def activate_session():
     if session:
         session.Activate()
     else:
-        vt = None
+        activate_session_fallback()
 
-        # Look for a kiosk-mode session that we missed
+def activate_session_logind():
+    """Use logind to activate what should be the current session.
+
+    Similar to consolekit_activate_session, except using logind.
+    """
+    global KIOSK_USER
+    if KIOSK_USER is None:
         try:
-            vt = open('/var/run/athena-kiosk-vt').read().strip()
-        except IOError, e:
-            pass
+            KIOSK_USER = pwd.getpwnam('kiosk@mit').pw_uid
+        except KeyError:
+            # There is no kiosk user
+            KIOSK_USER = False
 
-        # Look for any X session
-        if not vt:
-            p = subprocess.Popen(['pgrep', '-x', 'Xorg'],
+    bus = dbus.SystemBus()
+    manager = dbus.Interface(bus.get_object(LD_NAME, LD_MANAGER_PATH),
+                             LD_MANAGER_IFACE)
+
+    # Get all active sessions
+    sessions = manager.ListSessions()
+    target_sessions = {}
+    for s in sessions:
+        # Each session is a dbus.Struct (tuple) of:
+        # (session id, uid, username, seat id, and session object path)
+        session = dbus.Interface(bus.get_object(LD_NAME, s[-1]),
+                                 LD_SESSION_IFACE)
+        obj_properties = dbus.Interface(session,
+                                        'org.freedesktop.DBus.Properties')
+        properties = obj_properties.GetAll(LD_SESSION_IFACE)
+        if properties['Type'] == 'x11' and properties['Remote'] == 0:
+            logger.debug("Found %s on VT %s", properties['Name'],
+                         properties['VTNr'])
+            target_sessions[properties['Name']] = session
+
+    if KIOSK_USER and KIOSK_USER in target_sessions:
+        # Prefer a kiosk mode session
+        target_sessions[KIOSK_USER].Activate()
+    else:
+        if len(target_sessions) < 1:
+            activate_session_fallback()
+        else:
+            if len(target_sessions) > 1:
+                logger.error("Multiple active sessions found: %s",
+                             repr(target_sessions.keys()))
+            target_sessions.values()[0].Activate()
+
+def activate_session_fallback():
+    vt = None
+
+    # Look for a kiosk-mode session that we missed
+    try:
+        vt = open('/var/run/athena-kiosk-vt').read().strip()
+        logger.warn("Found a kiosk session in fallback mode")
+    except IOError, e:
+        pass
+
+    # Look for any X session
+    if not vt:
+        logger.warn("Falling back to pgrep")
+        p = subprocess.Popen(['pgrep', '-x', 'Xorg'],
+                             stdout=subprocess.PIPE)
+        pid, _ = p.communicate()
+        pid = pid.splitlines()[0]
+
+        if pid:
+            p = subprocess.Popen(['ps', '-otty=', pid],
                                  stdout=subprocess.PIPE)
-            pid, _ = p.communicate()
-            pid = pid.splitlines()[0]
+            tty, _ = p.communicate()
+            tty = tty.splitlines()[0]
 
-            if pid:
-                p = subprocess.Popen(['ps', '-otty=', pid],
-                                     stdout=subprocess.PIPE)
-                tty, _ = p.communicate()
-                tty = tty.splitlines()[0]
+            if tty.startswith('tty'):
+                vt = tty[len('tty'):]
 
-                if tty.startswith('tty'):
-                    vt = tty[len('tty'):]
+    if vt:
+        subprocess.call(['chvt', vt])
 
-        if vt:
-            subprocess.call(['chvt', vt])
 
+def activate_session():
+    """
+    Figure out what session manager is in use and use it to find and
+    activate the current session.
+    """
+    have_consolekit = False
+    have_logind = False
+    try:
+        logger.debug("Checking for ConsoleKit")
+        _ = dbus.SystemBus().get_object(CK_NAME, CK_MANAGER_PATH)
+        have_consolekit = True
+    except DBusException as e:
+        if e.get_dbus_name() != "org.freedesktop.DBus.Error.ServiceUnknown":
+            logger.exception(
+                "Unexpected DBus exception while checking for ConsoleKit")
+    try:
+        logger.debug("Checking for logind")
+        _ = dbus.SystemBus().get_object(LD_NAME, LD_MANAGER_PATH)
+        have_logind = True
+    except DBusException as e:
+        if e.get_dbus_name() != "org.freedesktop.DBus.Error.ServiceUnknown":
+            logger.exception(
+                "Unexpected DBus exception while checking for logind")
+    logger.debug("ConsoleKit: %s; logind: %s", have_consolekit, have_logind)
+    if have_consolekit:
+        activate_session_consolekit()
+    elif have_logind:
+        activate_session_logind()
+    else:
+        logger.warn("Neither ConsoleKit nor logind available.")
 
 def main():
     tty_name = find_tty(sys.argv[1:])
+    if os.getenv('DEBATHENA_DEBUG_GETTY', '0') == '1':
+        # Note that when debugging, executing "socat STDIO PTY" in a second
+        # xterm, and then connecting to that PTY, is incredibly helpful.
+        logger.addHandler(logging.StreamHandler())
     tty = open(os.path.join('/dev', tty_name), 'a+')
     # We want to set TERM for a tty, not for whatever TERM was set to
     # on getty's controlling terminal.
@@ -130,6 +235,8 @@ def main():
 
     CLEAR = curses.tigetstr('clear')
 
+    # Why is this in a loop when upstart will just respawn the job
+    # anyway?
     while True:
         tty.write(CLEAR)
         tty.write('Please press Enter to return to your session\n')
