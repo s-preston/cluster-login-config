@@ -6,7 +6,6 @@ debian/disable-suspend.pkla etc/polkit-1/localauthority/30-site.d
 debian/disable-hibernate.pkla etc/polkit-1/localauthority/30-site.d
 debian/50_debathena-cluster etc/grub.d
 debian/debathena-cluster-login-config-sudoers etc/sudoers.d
-debian/user etc/dconf/profile
-debian/00-athena etc/dconf/db/athena.d
-debian/00-athena-locks etc/dconf/db/athena.d/locks
+debian/10-cluster-login-config etc/dconf/db/athena.d
+debian/10-cluster-login-config-locks etc/dconf/db/athena.d/locks
 debian/99-athena.conf usr/share/lightdm/lightdm.conf.d

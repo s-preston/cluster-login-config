@@ -2,8 +2,9 @@ debathena-cluster-login-config (1.41) UNRELEASED; urgency=low
 
   * Update getty.debathena to work with logind (which has replaced
     ConsoleKit in Trusty) (Trac: #1482)
+  * This version actually includes the dconf locks described in 1.40
 
- -- Jonathan Reed <jdreed@mit.edu>  Fri, 13 Jun 2014 16:16:36 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Fri, 13 Jun 2014 16:21:23 -0400
 
 debathena-cluster-login-config (1.40) unstable; urgency=low
 

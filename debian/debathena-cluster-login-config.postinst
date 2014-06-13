@@ -133,6 +133,10 @@ case "$1" in
 	# Sadly, dh_installsudoers is not a thing.
 	chmod 0440 /etc/sudoers.d/debathena-cluster-login-config-sudoers
 
+	# Call dconf update to rebuild the binary dconf databases
+	# from the snippet files we installed
+	dconf update
+
 	exit 0
     ;;
 
