@@ -4,8 +4,10 @@ debathena-cluster-login-config (1.41) UNRELEASED; urgency=low
     ConsoleKit in Trusty) (Trac: #1482)
   * This version actually includes the dconf locks described in 1.40
   * Depend on debathena-dconf-config
+  * Convert to dh7 and clean up maintainer scripts
+  * Remove stray c-p-d shell code from maintainer scripts
 
- -- Jonathan Reed <jdreed@mit.edu>  Wed, 18 Jun 2014 13:24:55 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Wed, 18 Jun 2014 18:05:34 -0400
 
 debathena-cluster-login-config (1.40) unstable; urgency=low
 

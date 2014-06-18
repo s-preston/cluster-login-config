@@ -2,11 +2,15 @@ Source: debathena-cluster-login-config
 Section: debathena-config/net
 Priority: extra
 Maintainer: Debathena Project <debathena@mit.edu>
-Build-Depends: cdbs, debhelper, dh-buildinfo, config-package-dev (>= 5.0~), system-services, debathena-gdm-config
+Build-Depends: debhelper (>= 7.0.50~),
+ config-package-dev (>= 5.0~),
+ system-services,
+ debathena-gdm-config,
 Standards-Version: 3.9.3
 
 Package: debathena-cluster-login-config
 Architecture: all
+Pre-Depends: dpkg (>= 1.15.7.2~)
 Depends: ${misc:Depends}, debathena-afs-config, debathena-gdm-config, debathena-kiosk, gconf2, gnome-screensaver, update-notifier-common, debathena-machtype (>= 10.0.2-0debathena1~), python-dbus, grub-common, sudo (>= 1.7.2p1-1~), dconf-cli | dconf-tools, debathena-dconf-config
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}

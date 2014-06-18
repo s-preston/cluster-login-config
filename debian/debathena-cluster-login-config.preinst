@@ -13,38 +13,16 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-rm_conffile() {
-    local PKGNAME="$1"
-    local CONFFILE="$2"
-
-    [ -e "$CONFFILE" ] || return 0
-
-    local md5sum="$(md5sum $CONFFILE | sed -e 's/ .*//')"
-    local old_md5sum="$(dpkg-query -W -f='${Conffiles}' $PKGNAME | \
-            sed -n -e "\' $CONFFILE ' { s/ obsolete$//; s/.* //; p }")"
-    # ' # <-- emacs is confused about quoting
-    if [ "$md5sum" != "$old_md5sum" ]; then
-        echo "Obsolete conffile $CONFFILE has been modified by you."
-        echo "Saving as $CONFFILE.dpkg-bak ..."
-        mv -f "$CONFFILE" "$CONFFILE".dpkg-bak
-    else
-        echo "Removing obsolete conffile $CONFFILE ..."
-        mv -f "$CONFFILE" "$CONFFILE".dpkg-del
-    fi
-}
+# Clean up from old conffiles
+dpkg-maintscript-helper rm_conffile /etc/event.d/ttymsg 1.23 -- "$@"
+dpkg-maintscript-helper rm_conffile /etc/init/ttymsg.conf 1.23 -- "$@"
+dpkg-maintscript-helper rm_conffile \
+    /etc/apt/sources.list.d/debathena-backports.list 1.36 -- "$@"
+dpkg-maintscript-helper rm_conffile \
+    /etc/apt/preferences.d/debathena-libstdcplusplus.pref 1.36 -- "$@"
 
 case "$1" in
     install|upgrade)
-        if dpkg --compare-versions "$2" lt 1.24~; then
-            rm_conffile debathena-cluster-login-config "/etc/event.d/ttymsg"
-            rm_conffile debathena-cluster-login-config "/etc/init/ttymsg.conf"
-        fi
-
-	if dpkg --compare-versions "$2" lt 1.36.2~; then
-	    rm_conffile debathena-cluster-login-config /etc/apt/sources.list.d/debathena-backports.list
-	    rm_conffile debathena-cluster-login-config /etc/apt/preferences.d/debathena-libstdcplusplus.pref
-	fi
-
     ;;
 
     abort-upgrade)

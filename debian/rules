@@ -1,62 +1,7 @@
 #!/usr/bin/make -f
 
-DEB_DIVERT_EXTENSION = .debathena
+%:
+	dh $@ --with config-package
 
-# We used to divert kexec
-DEB_UNDIVERT_FILES_debathena-cluster-login-config += \
-	/etc/default/kexec.debathena \
-# We diverted these for gdm << 2.25.2~, and there may be upgrades
-# from old-gdm to new-gdm.
-DEB_UNDIVERT_FILES_debathena-cluster-login-config += \
-	/etc/gdm/gdm.conf.debathena.debathena \
-	/etc/gdm/gdm.conf-custom.debathena.debathena
-
-# Remove some sessions we don't want.
-DEB_REMOVE_FILES_debathena-cluster-login-config += \
-	/usr/share/xsessions/gnome-failsafe.desktop \
-	/usr/share/xsessions/xterm.desktop
-# Transform the already-transformed gdm pam config
-# to prevent root login on console
-DEB_TRANSFORM_FILES_debathena-cluster-login-config += \
-	/etc/pam.d/gdm.debathena.debathena
-
-
-# Stop transforming gdm's dbus service
-# (was workaround for Lucid stupidity)
-DEB_UNDIVERT_FILES_debathena-cluster-login-config += \
-	/etc/dbus-1/system.d/gdm.conf.debathena
-
-# We used to remove this to disable user switching
-DEB_UNREMOVE_FILES_debathena-cluster-login-config += \
-    /usr/lib/indicator-session/indicator-users-service
-
-# Install our fake getty for the VTs
-DEB_DIVERT_FILES_debathena-cluster-login-config += \
-	/sbin/getty.debathena
-
-# We used to remove these.  /etc/event.d is for Jaunty and earlier
-DEB_UNREMOVE_FILES_debathena-cluster-login-config += \
-	/etc/event.d/tty1 \
-	/etc/event.d/tty2 \
-	/etc/event.d/tty3 \
-	/etc/event.d/tty4 \
-	/etc/event.d/tty5 \
-	/etc/event.d/tty6
-
-# Same as above, but for Karmic and later
-DEB_UNREMOVE_FILES_debathena-cluster-login-config += \
-	/etc/init/tty1.conf \
-	/etc/init/tty2.conf \
-	/etc/init/tty3.conf \
-	/etc/init/tty4.conf \
-	/etc/init/tty5.conf \
-	/etc/init/tty6.conf
-
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/config-package.mk
-
-# dh_gconf needs to get called explicitly to install the
-# .gconf-mandatory and .gconf-defaults files
-install/debathena-cluster-login-config::
+override_dh_gconf:
 	dh_gconf --priority 90
-

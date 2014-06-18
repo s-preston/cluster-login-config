@@ -1,0 +1,8 @@
+# We used to divert this before kexec honored its settings
+/etc/default/kexec.debathena
+# We diverted these for gdm << 2.25.2~, and there may be upgrades
+# from old-gdm to new-gdm.
+/etc/gdm/gdm.conf.debathena.debathena
+/etc/gdm/gdm.conf-custom.debathena.debathena
+# We used to divert this because gdm on lucid was dumb
+/etc/dbus-1/system.d/gdm.conf.debathena

@@ -20,84 +20,22 @@ set -e
 
 #DEBHELPER#
 
-package=debathena-cluster-login-config
-ours=.debathena
-theirs=.debathena-orig
-
-undivert_unlink_symlink()
-{
-    file="$1"
-    ourfile="$2"
-    theirfile="$3"
-    if [ ! -L "$file" ] || \
-        [ "$(readlink "$file")" != "$(basename "$ourfile")" -a \
-          "$(readlink "$file")" != "$(basename "$theirfile")" ]; then
-        echo "*** OMINOUS WARNING ***: $file is not linked to either $(basename "$ourfile") or $(basename "$theirfile")" >&2
-    else
-        rm -f "$file"
-    fi
-}
-
-undivert_unlink_divert()
-{
-    file="$1"
-    if [ ! -L "$file" ] && [ ! -e "$file" ]; then
-        dpkg-divert --remove --rename --package "$package" "$file"
-    else
-        echo "Not removing diversion of $file by $package" >&2
-    fi
-}
-
-undivert_unlink()
-{
-    prefix=$1
-    suffix=$2
-
-    file=$prefix$suffix
-    ourfile=$prefix$ours$suffix
-    theirfile=$prefix$theirs$suffix
-
-    undivert_unlink_symlink "$file" "$ourfile" "$theirfile"
-    undivert_unlink_divert "$file" "$package"
-}
-
-cleanup_old_diversion() {
-    file="$1"
-    if dpkg-divert --list "${file}" | grep -Fxq "diversion of ${file} to ${file}${theirs} by ${package}"; then
-        undivert_unlink "$file"
-    fi
-}
-
-rm_conffile() {
-    local PKGNAME="$1" # Unused
-    local CONFFILE="$2"
-    if [ -f "$CONFFILE".dpkg-del ]; then
-        rm -f "$CONFFILE".dpkg-del
-    fi
-}
+# Clean up from old conffiles
+dpkg-maintscript-helper rm_conffile /etc/event.d/ttymsg 1.23 -- "$@"
+dpkg-maintscript-helper rm_conffile /etc/init/ttymsg.conf 1.23 -- "$@"
+dpkg-maintscript-helper rm_conffile \
+    /etc/apt/sources.list.d/debathena-backports.list 1.36 -- "$@"
+dpkg-maintscript-helper rm_conffile \
+    /etc/apt/preferences.d/debathena-libstdcplusplus.pref 1.36 -- "$@"
 
 case "$1" in
     configure)
-	gdm_version="$(dpkg-query -W -f '${Version}' gdm)"
-	if dpkg --compare-versions "$gdm_version" ge '2.25.2~'; then
-	    cleanup_old_diversion /etc/gdm/gdm.conf.debathena
-	    cleanup_old_diversion /etc/gdm/gdm.conf-custom.debathena
-	fi
-
-        if dpkg --compare-versions "$2" lt 1.24~; then
-            rm_conffile debathena-cluster-login-config "/etc/event.d/ttymsg"
-            rm_conffile debathena-cluster-login-config "/etc/init/ttymsg.conf"
-        fi
-
 	if dpkg --compare-versions "$2" lt '1.36.2~'; then
 	    # Cleanup from previous installs
 	    # /etc/apt/preferences was frobbed due to (LP:508545)
 	    if grep -qxF "Package: libstdc++5" /etc/apt/preferences 2>/dev/null; then
 	        rm /etc/apt/preferences
 	    fi
-	    # Cleanup conffiles
-	    rm_conffile debathena-cluster-login-config /etc/apt/sources.list.d/debathena-backports.list
-	    rm_conffile debathena-cluster-login-config /etc/apt/preferences.d/debathena-libstdcplusplus.pref
 	fi
 
 	if dpkg --compare-versions "$2" lt 1.35.2~; then
@@ -119,12 +57,6 @@ case "$1" in
             initctl stop "tty$i" >/dev/null 2>&1 || true
             initctl start "tty$i" >/dev/null 2>&1 || true
         done
-
-	# Configure dns-nameservers if they're not there
-	if ! egrep -q '^[[:space:]]+dns-nameservers' /etc/network/interfaces; then
-	    echo '  dns-nameservers 18.70.0.160 18.71.0.151 18.72.0.3' >>/etc/network/interfaces
-	    /usr/share/update-notifier/notify-reboot-required
-	fi
 
 	# Attempt to initially set the root password.
 	/usr/sbin/athena-root-password

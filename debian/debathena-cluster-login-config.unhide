@@ -1,0 +1,18 @@
+# We used to divert the tty jobs themselves, rather than getty
+# Former diverted tty jobs for Jaunty and earlier
+/etc/event.d/tty1
+/etc/event.d/tty2
+/etc/event.d/tty3
+/etc/event.d/tty4
+/etc/event.d/tty5
+/etc/event.d/tty6
+# Former diverted tty jobs for Karmic and later
+/etc/init/tty1.conf
+/etc/init/tty2.conf
+/etc/init/tty3.conf
+/etc/init/tty4.conf
+/etc/init/tty5.conf
+/etc/init/tty6.conf
+# We used to remove this in Lucid and earlier to disable
+# user-switching
+/usr/lib/indicator-session/indicator-users-service
