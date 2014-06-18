@@ -1,0 +1,16 @@
+[org.gnome.desktop.screensaver]
+logout-enabled=true
+logout-delay=1200
+logout-command='/usr/share/debathena-cluster-login-config/screensaver_logout.sh'
+user-switch-enabled=false
+lock-delay=1
+lock-enabled=true
+
+[org.gnome.desktop.lockdown]
+disable-user-switching=true
+
+[org.gnome.settings-daemon.plugins.power]
+sleep-display-ac=600
+
+[com.canonical.Unity.Launcher]
+favorites=['nautilus-home.desktop', 'firefox.desktop', 'libreoffice-writer.desktop', 'libreoffice-calc.desktop', 'libreoffice-impress.desktop', 'gnome-terminal.desktop', 'ubuntu-software-center.desktop', 'gnome-control-center.desktop']

@@ -6,6 +6,7 @@ Build-Depends: debhelper (>= 7.0.50~),
  config-package-dev (>= 5.0~),
  system-services,
  debathena-gdm-config,
+ lsb-release,
 Standards-Version: 3.9.3
 
 Package: debathena-cluster-login-config
