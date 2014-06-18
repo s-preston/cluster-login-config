@@ -1,4 +1,4 @@
-debathena-cluster-login-config (1.41) UNRELEASED; urgency=low
+debathena-cluster-login-config (1.41) unstable; urgency=low
 
   * Update getty.debathena to work with logind (which has replaced
     ConsoleKit in Trusty) (Trac: #1482)
