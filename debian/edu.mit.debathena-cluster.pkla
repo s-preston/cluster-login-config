@@ -1,0 +1,45 @@
+# Disable hibernate via upower (legacy)
+[Disable hibernate]
+Identity=unix-user:*
+Action=org.freedesktop.upower.hibernate
+ResultActive=no
+ResultAny=no
+
+# Disable hibernate via logind
+[Disable hibernate via logind]
+Identity=unix-user:*
+Action=org.freedesktop.login1.hibernate
+ResultActive=no
+ResultAny=no
+
+# Disable hiberate via logind for multiple-session seats
+# which includes any Unity session
+[Disable multi hibernate via logind]
+Identity=unix-user:*
+Action=org.freedesktop.login1.hibernate-multiple-sessions
+ResultActive=no
+ResultAny=no
+
+# Disable suspend via upower (legacy)
+[Disable suspend]
+Identity=unix-user:*
+Action=org.freedesktop.upower.suspend
+ResultActive=no
+ResultAny=no
+
+# Disable suspend via logind for multiple-session seats
+# which includes any Unity session
+# Disable suspend via logind
+[Disable suspend via logind]
+Identity=unix-user:*
+Action=org.freedesktop.login1.suspend
+ResultActive=no
+ResultAny=no
+
+# Disable suspend via logind for multiple-session seats
+# which includes any Unity session
+[Disable multi suspend via logind]
+Identity=unix-user:*
+Action=org.freedesktop.login1.suspend-multiple-sessions
+ResultActive=no
+ResultAny=no

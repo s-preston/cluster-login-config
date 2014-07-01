@@ -20,6 +20,10 @@ set -e
 
 #DEBHELPER#
 
+# We moved this to a single file in /var/lib/polkit-1
+dpkg-maintscript-helper rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-hibernate.pkla 1.41 -- "$@"
+dpkg-maintscript-helper rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-suspend.pkla 1.41 -- "$@"
+
 # Clean up from old conffiles
 dpkg-maintscript-helper rm_conffile /etc/event.d/ttymsg 1.23 -- "$@"
 dpkg-maintscript-helper rm_conffile /etc/init/ttymsg.conf 1.23 -- "$@"
