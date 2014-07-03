@@ -20,18 +20,6 @@ set -e
 
 #DEBHELPER#
 
-# We moved this to a single file in /var/lib/polkit-1
-dpkg-maintscript-helper rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-hibernate.pkla 1.41 -- "$@"
-dpkg-maintscript-helper rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-suspend.pkla 1.41 -- "$@"
-
-# Clean up from old conffiles
-dpkg-maintscript-helper rm_conffile /etc/event.d/ttymsg 1.23 -- "$@"
-dpkg-maintscript-helper rm_conffile /etc/init/ttymsg.conf 1.23 -- "$@"
-dpkg-maintscript-helper rm_conffile \
-    /etc/apt/sources.list.d/debathena-backports.list 1.36 -- "$@"
-dpkg-maintscript-helper rm_conffile \
-    /etc/apt/preferences.d/debathena-libstdcplusplus.pref 1.36 -- "$@"
-
 case "$1" in
     configure)
 	if dpkg --compare-versions "$2" lt '1.36.2~'; then
@@ -46,13 +34,13 @@ case "$1" in
 	    update-grub
 	fi
 
-	# Shut down sshd and reload gdm.
+	# Shut down sshd
+	# We do not need to kick lightdm -- it will refuse to run
+	# if the session vanishes out from under it.
 	if hash invoke-rc.d; then
 	    invoke-rc.d ssh stop
-            invoke-rc.d gdm reload || true
 	else
 	    /etc/init.d/ssh stop
-            /etc/init.d/gdm reload || true
 	fi
 
         # Make sure the gettys are running

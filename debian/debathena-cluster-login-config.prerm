@@ -21,18 +21,6 @@ set -e
 
 #DEBHELPER#
 
-# We moved this to a single file in /var/lib/polkit-1
-dpkg-maintscript-helper rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-hibernate.pkla 1.41 -- "$@"
-dpkg-maintscript-helper rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-suspend.pkla 1.41 -- "$@"
-
-# Clean up from old conffiles
-dpkg-maintscript-helper rm_conffile /etc/event.d/ttymsg 1.23 -- "$@"
-dpkg-maintscript-helper rm_conffile /etc/init/ttymsg.conf 1.23 -- "$@"
-dpkg-maintscript-helper rm_conffile \
-    /etc/apt/sources.list.d/debathena-backports.list 1.36 -- "$@"
-dpkg-maintscript-helper rm_conffile \
-    /etc/apt/preferences.d/debathena-libstdcplusplus.pref 1.36 -- "$@"
-
 case "$1" in
     remove|upgrade|deconfigure)
         perl -i'' -ne 's%^### (BEGIN|END) debathena-cluster-login-config\s*$%%m && ($skip = ($1 eq "BEGIN")); print unless $skip;' /etc/sudoers
