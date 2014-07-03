@@ -1,4 +1,4 @@
-debathena-cluster-login-config (1.42) UNRELEASED; urgency=low
+debathena-cluster-login-config (1.42) unstable; urgency=low
 
   * Combine the two pkla files to disable suspend and hibernate into a
     single file, which is now correctly located in /var/lib/polkit-1
