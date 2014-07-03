@@ -4,8 +4,9 @@ debathena-cluster-login-config (1.42) UNRELEASED; urgency=low
     single file, which is now correctly located in /var/lib/polkit-1
   * Add groups to the pkla files to support disabling suspend and
     hibernate via logind (upower is now deprecated)
+  * Drop support for gdm
 
- -- Jonathan Reed <jdreed@mit.edu>  Tue, 01 Jul 2014 12:48:06 -0400
+ -- Jonathan Reed <jdreed@mit.edu>  Thu, 03 Jul 2014 13:18:55 -0400
 
 debathena-cluster-login-config (1.41) unstable; urgency=low
 

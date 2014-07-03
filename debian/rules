@@ -11,8 +11,5 @@ override_dh_clean:
 	dh_clean
 	rm -f debian/debathena-cluster-login-config.gsettings-override
 
-override_dh_gconf:
-	dh_gconf --priority 90
-
 override_dh_auto_build: debian/debathena-cluster-login-config.gsettings-override
 	dh_auto_build
