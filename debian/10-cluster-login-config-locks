@@ -1,1 +1,6 @@
 /apps/indicator-session/user-show-menu
+/apps/indicator-session/suppress-restart-menuitem
+/apps/indicator-session/suppress-shutdown-menuitem
+/com/canonical/unity-greeter/draw-user-backgrounds
+/com/canonical/unity-greeter/background
+/com/canonical/unity-greeter/logo

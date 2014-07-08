@@ -1,3 +1,13 @@
+debathena-cluster-login-config (1.43) unstable; urgency=low
+
+  * Suppress the shutdown and restart menu items in indicator-session,
+    since something about the chroot prevents it from working properly.
+  * Let lightdm shut down the machine without a password
+  * Force some dconf keys for the unity-greeter (which is also the lock
+    screen)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 08 Jul 2014 18:06:16 -0400
+
 debathena-cluster-login-config (1.42) unstable; urgency=low
 
   * Combine the two pkla files to disable suspend and hibernate into a

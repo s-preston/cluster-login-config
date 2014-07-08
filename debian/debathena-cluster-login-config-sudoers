@@ -2,3 +2,4 @@
 ALL !ALL=!ALL
 %admin ALL=(ALL) ALL
 
+lightdm ALL=NOPASSWD: /sbin/reboot

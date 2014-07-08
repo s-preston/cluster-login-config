@@ -1,2 +1,9 @@
 [apps/indicator-session]
 user-show-menu=false
+suppress-restart-menuitem=true
+suppress-shutdown-menuitem=true
+
+[com/canonical/unity-greeter]
+draw-user-backgrounds=false
+background='/usr/share/debathena-lightdm-config/background.jpg'
+logo='/usr/share/debathena-cluster-login-config/logo.png'
