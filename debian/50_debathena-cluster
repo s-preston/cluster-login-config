@@ -7,4 +7,10 @@ cat <<EOF
 if [ \${timeout} = -1 ]; then
   set timeout=60
 fi
+
+# Disable recordfail with a dummy function
+# See Debian #754921 and LP #1274320
+function recordfail {
+  set recordfail=0
+}
 EOF
