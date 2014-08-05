@@ -1,9 +1,9 @@
 # We moved this to a single file in /var/lib/polkit-1
-rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-hibernate.pkla 1.41 -- "$@"
-rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-suspend.pkla 1.41 -- "$@"
+rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-hibernate.pkla 1.41
+rm_conffile /etc/polkit-1/localauthority/30-site.d/disable-suspend.pkla 1.41
 # We used to divert the upstart jobs themseves
-rm_conffile /etc/event.d/ttymsg 1.23 -- "$@"
-rm_conffile /etc/init/ttymsg.conf 1.23 -- "$@"
+rm_conffile /etc/event.d/ttymsg 1.23
+rm_conffile /etc/init/ttymsg.conf 1.23
 # We briefly enabled backports for libstdc++
-rm_conffile /etc/apt/sources.list.d/debathena-backports.list 1.36 -- "$@"
-rm_conffile /etc/apt/preferences.d/debathena-libstdcplusplus.pref 1.36 -- "$@"
+rm_conffile /etc/apt/sources.list.d/debathena-backports.list 1.36
+rm_conffile /etc/apt/preferences.d/debathena-libstdcplusplus.pref 1.36

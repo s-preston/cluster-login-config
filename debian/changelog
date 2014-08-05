@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.44.1) unstable; urgency=low
+
+  * Use correct syntax in .mainstcript file
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Aug 2014 15:43:44 -0400
+
 debathena-cluster-login-config (1.44) unstable; urgency=low
 
   * Work around upstream bugs by redefining recordfail() to do nothing in
