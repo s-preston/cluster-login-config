@@ -23,6 +23,7 @@ Depends: ${misc:Depends},
  sudo (>= 1.7.2p1-1~),
  dconf-cli | dconf-tools,
  debathena-dconf-config,
+ debathena-ssh-server-config,
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Breaks: debathena-reactivate (<< 2~)

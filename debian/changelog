@@ -1,3 +1,10 @@
+debathena-cluster-login-config (1.44.2) unstable; urgency=low
+
+  * Depend on debathena-ssh-server-config, since we invoke the ssh
+    initscript in the postinst
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 05 Aug 2014 17:01:58 -0400
+
 debathena-cluster-login-config (1.44.1) unstable; urgency=low
 
   * Use correct syntax in .mainstcript file
