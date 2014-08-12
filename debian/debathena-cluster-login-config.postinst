@@ -61,6 +61,9 @@ case "$1" in
 	# from the snippet files we installed
 	dconf update
 
+	# Turn cups browsing off
+	initctl stop cups-browsed >/dev/null 2>&1 || true
+
 	exit 0
     ;;
 

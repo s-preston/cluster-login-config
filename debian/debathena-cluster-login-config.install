@@ -9,3 +9,4 @@ debian/10-cluster-login-config etc/dconf/db/athena.d
 debian/10-cluster-login-config-locks etc/dconf/db/athena.d/locks
 debian/99-athena.conf usr/share/lightdm/lightdm.conf.d
 debian/logo.png usr/share/debathena-cluster-login-config
+debian/cups-browsed.override etc/init

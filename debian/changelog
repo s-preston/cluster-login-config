@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.45) unstable; urgency=low
+
+  * Disable CUPS browsing (Trac: #1524)
+
+ -- Jonathan Reed <jdreed@mit.edu>  Tue, 12 Aug 2014 15:23:07 -0400
+
 debathena-cluster-login-config (1.44.2) unstable; urgency=low
 
   * Depend on debathena-ssh-server-config, since we invoke the ssh
