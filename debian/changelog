@@ -1,3 +1,9 @@
+debathena-cluster-login-config (1.45.1) unstable; urgency=low
+
+  * divert /etc/X11/Xsession.d/90qt-a11y (Trac #1573)
+
+ -- Sean P. Preston <wpreston@mit.edu>  Fri, 22 Jan 2016 13:34:38 -0500
+
 debathena-cluster-login-config (1.45) unstable; urgency=low
 
   * Disable CUPS browsing (Trac: #1524)

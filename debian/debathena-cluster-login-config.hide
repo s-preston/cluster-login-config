@@ -1,3 +1,4 @@
 # We do not want these sessions visible
 /usr/share/xsessions/gnome-failsafe.desktop
 /usr/share/xsessions/xterm.desktop
+/etc/X11/Xsession.d/90qt-a11y
